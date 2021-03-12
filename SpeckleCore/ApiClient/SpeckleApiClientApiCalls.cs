@@ -2416,18 +2416,17 @@ namespace SpeckleCore
     /// <summary>StreamUpdate</summary>
     /// <returns>All good!</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
-    public System.Threading.Tasks.Task<ResponseBase> StreamUpdateAsync( string streamId, SpeckleStream stream )
+    public System.Threading.Tasks.Task<ResponseBase> StreamUpdateAsync( string streamId, SpeckleStream stream, int timeoutMillisecondsOverride = 0)
     {
-      return StreamUpdateAsync( streamId, stream, System.Threading.CancellationToken.None );
+      return StreamUpdateAsync( streamId, stream, System.Threading.CancellationToken.None, timeoutMillisecondsOverride);
     }
 
     /// <summary>StreamUpdate</summary>
     /// <returns>All good!</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-    public async System.Threading.Tasks.Task<ResponseBase> StreamUpdateAsync( string streamId, SpeckleStream stream, System.Threading.CancellationToken cancellationToken )
+    public async System.Threading.Tasks.Task<ResponseBase> StreamUpdateAsync( string streamId, SpeckleStream stream, System.Threading.CancellationToken cancellationToken, int timeoutMillisecondsOverride = 0)
     {
-
       SpeckleTelemetry.RecordStreamUpdated( ClientType );
 
       if ( streamId == null )
@@ -2437,7 +2436,7 @@ namespace SpeckleCore
       urlBuilder_.Append( BaseUrl != null ? BaseUrl.TrimEnd( '/' ) : "" ).Append( "/streams/{streamId}" );
       urlBuilder_.Replace( "{streamId}", System.Uri.EscapeDataString( ConvertToString( streamId, System.Globalization.CultureInfo.InvariantCulture ) ) );
 
-      var client_ = GetHttpClient();
+      var client_ = (timeoutMillisecondsOverride == 0) ? GetHttpClient() : GetHttpClient(timeoutMillisecondsOverride);
       try
       {
         using ( var request_ = new System.Net.Http.HttpRequestMessage() )
