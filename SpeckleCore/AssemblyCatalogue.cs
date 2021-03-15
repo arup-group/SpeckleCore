@@ -64,7 +64,7 @@ namespace SpeckleCore
       var loadedSpeckleReferencingAssemblyNames = loadedAssemblies.Select( assembly => assembly.GetName() ).ToArray();
       var directories = Directory.GetDirectories( SpeckleKitsDirectory );
       var currDomain = AppDomain.CurrentDomain;
-
+      var previouslyLoadedAssemblyNames = AppDomain.CurrentDomain.GetAssemblies().Select(a => a.GetName().Name);
 
       foreach ( var directory in directories )
       {
@@ -72,7 +72,7 @@ namespace SpeckleCore
         {
           var unloadedAssemblyName = SafeGetAssemblyName( assemblyPath );
 
-          if ( unloadedAssemblyName == null )
+          if ( unloadedAssemblyName == null || previouslyLoadedAssemblyNames.Contains(unloadedAssemblyName.Name))
           {
             continue;
           }
