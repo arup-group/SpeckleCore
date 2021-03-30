@@ -3,12 +3,12 @@ name: .NET
 on: 
   push:
     tags:
-      - '*'
+      - '*.*.*.*'
 
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v2
@@ -19,11 +19,13 @@ jobs:
         dotnet-version: 5.0.x
 
     - name: Build solution and generate NuGet package
-      run: dotnet pack -c Release -o out -p:PackageVersion=${GITHUB_REF##*/}
+      run: |
+        $tag = $env:GITHUB_REF.Split("/")[-1]
+        dotnet pack -c Release -o out -p:PackageVersion=$tag
       working-directory: SpeckleCore
 
     - name: Push generated package to GitHub registry
-      run: dotnet nuget push ./*.nupkg --skip-duplicate --api-key ${{ secrets.SPECKLE_NUGET_AUTH_TOKEN }} --source https://api.nuget.org/v3/index.json
+      run: dotnet nuget push *.nupkg --skip-duplicate --api-key ${{ secrets.SPECKLE_NUGET_AUTH_TOKEN }} --source https://api.nuget.org/v3/index.json
       working-directory: SpeckleCore/out
 
 
