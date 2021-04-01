@@ -10,7 +10,7 @@
     <Summary>.NET base for the api (community edition)</Summary>
     <NeutralLanguage>en-US</NeutralLanguage>
     <Copyright></Copyright>
-    <AssemblyName>SpecCxCore</AssemblyName>
+    <AssemblyName>SpeckleCore</AssemblyName>
     <RootNamespace>SpeckleCore</RootNamespace>
     <PackageProjectUrl>https://github.com/arup-group/SpeckleCore</PackageProjectUrl>
     <RepositoryUrl>https://github.com/arup-group/SpeckleCore</RepositoryUrl>
