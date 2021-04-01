@@ -23,6 +23,7 @@
     <InformationalVersion>1.0.0.0</InformationalVersion>
     <FileVersion>1.0.0.0</FileVersion>
     <PackageVersion>1.0.0.0</PackageVersion>
+	  <PackageId>SpecCxCore</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
