@@ -22,6 +22,7 @@ namespace SpeckleCore
     /// <summary>UserRegister</summary>
     /// <returns>New user successfully registered.</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
+    /// <param name="body"></param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     public async System.Threading.Tasks.Task<ResponseUser> UserRegisterAsync( User body, System.Threading.CancellationToken cancellationToken )
     {
@@ -220,6 +221,7 @@ namespace SpeckleCore
     /// <summary>UserSearch</summary>
     /// <returns>New user successfully registered.</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
+    /// <param name="user"></param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     public async System.Threading.Tasks.Task<ResponseUser> UserSearchAsync( User user, System.Threading.CancellationToken cancellationToken )
     {
@@ -417,6 +419,7 @@ namespace SpeckleCore
     /// <summary>UserUpdateProfile</summary>
     /// <returns>Things are looking good yo.</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
+    /// <param name="user"></param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     public async System.Threading.Tasks.Task<ResponseBase> UserUpdateProfileAsync( User user, System.Threading.CancellationToken cancellationToken )
     {
@@ -515,6 +518,7 @@ namespace SpeckleCore
     /// <summary>UserGetProfileById</summary>
     /// <returns>New user successfully registered.</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
+    /// <param name="userId"></param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     public async System.Threading.Tasks.Task<ResponseUser> UserGetProfileByIdAsync( string userId, System.Threading.CancellationToken cancellationToken )
     {
@@ -701,21 +705,23 @@ namespace SpeckleCore
     /// <summary>ClientCreate</summary>
     /// <returns>All the users's clients.</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
-    public System.Threading.Tasks.Task<ResponseClient> ClientCreateAsync( AppClient client )
+    public System.Threading.Tasks.Task<ResponseClient> ClientCreateAsync( AppClient client, int timeoutMillisecondsOverride = 0)
     {
-      return ClientCreateAsync( client, System.Threading.CancellationToken.None );
+      return ClientCreateAsync( client, System.Threading.CancellationToken.None, timeoutMillisecondsOverride );
     }
 
     /// <summary>ClientCreate</summary>
     /// <returns>All the users's clients.</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
+    /// <param name="client"></param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-    public async System.Threading.Tasks.Task<ResponseClient> ClientCreateAsync( AppClient client, System.Threading.CancellationToken cancellationToken )
+    /// <param name="timeoutMillisecondsOverride"></param>
+    public async System.Threading.Tasks.Task<ResponseClient> ClientCreateAsync( AppClient client, System.Threading.CancellationToken cancellationToken, int timeoutMillisecondsOverride = 0)
     {
       var urlBuilder_ = new System.Text.StringBuilder();
       urlBuilder_.Append( BaseUrl != null ? BaseUrl.TrimEnd( '/' ) : "" ).Append( "/clients" );
 
-      var client_ = GetHttpClient();
+      var client_ = timeoutMillisecondsOverride == 0 ? GetHttpClient() : GetHttpClient(timeoutMillisecondsOverride);
       try
       {
         using ( var request_ = new System.Net.Http.HttpRequestMessage() )
@@ -799,16 +805,19 @@ namespace SpeckleCore
     /// <summary>ClientUpdate</summary>
     /// <returns>All the users's clients.</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
-    public System.Threading.Tasks.Task<ResponseClient> ClientUpdateAsync( string clientId, AppClient client )
+    public System.Threading.Tasks.Task<ResponseClient> ClientUpdateAsync( string clientId, AppClient client, int timeoutMillisecondsOverride = 0)
     {
-      return ClientUpdateAsync( clientId, client, System.Threading.CancellationToken.None );
+      return ClientUpdateAsync( clientId, client, System.Threading.CancellationToken.None, timeoutMillisecondsOverride );
     }
 
     /// <summary>ClientUpdate</summary>
     /// <returns>All the users's clients.</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
+    /// <param name="clientId"></param>
+    /// <param name="client"></param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-    public async System.Threading.Tasks.Task<ResponseClient> ClientUpdateAsync( string clientId, AppClient client, System.Threading.CancellationToken cancellationToken )
+    /// <param name="timeoutMillisecondsOverride"></param>
+    public async System.Threading.Tasks.Task<ResponseClient> ClientUpdateAsync( string clientId, AppClient client, System.Threading.CancellationToken cancellationToken, int timeoutMillisecondsOverride = 0)
     {
       if ( clientId == null )
         throw new System.ArgumentNullException( "clientId" );
@@ -817,7 +826,7 @@ namespace SpeckleCore
       urlBuilder_.Append( BaseUrl != null ? BaseUrl.TrimEnd( '/' ) : "" ).Append( "/clients/{clientId}" );
       urlBuilder_.Replace( "{clientId}", System.Uri.EscapeDataString( ConvertToString( clientId, System.Globalization.CultureInfo.InvariantCulture ) ) );
 
-      var client_ = GetHttpClient();
+      var client_ = timeoutMillisecondsOverride == 0 ? GetHttpClient() : GetHttpClient(timeoutMillisecondsOverride);
       try
       {
         using ( var request_ = new System.Net.Http.HttpRequestMessage() )
@@ -909,6 +918,7 @@ namespace SpeckleCore
     /// <summary>ClientGet</summary>
     /// <returns>The client.</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
+    /// <param name="clientId"></param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     public async System.Threading.Tasks.Task<ResponseClient> ClientGetAsync( string clientId, System.Threading.CancellationToken cancellationToken )
     {
@@ -1008,6 +1018,7 @@ namespace SpeckleCore
     /// <summary>ClientDelete</summary>
     /// <returns>All good!</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
+    /// <param name="clientId"></param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     public async System.Threading.Tasks.Task<ResponseBase> ClientDeleteAsync( string clientId, System.Threading.CancellationToken cancellationToken )
     {
@@ -1202,6 +1213,7 @@ namespace SpeckleCore
     /// <summary>ProjectCreate</summary>
     /// <returns>All the users's clients.</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
+    /// <param name="project"></param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     public async System.Threading.Tasks.Task<ResponseProject> ProjectCreateAsync( Project project, System.Threading.CancellationToken cancellationToken )
     {
@@ -1300,6 +1312,8 @@ namespace SpeckleCore
     /// <summary>ProjectUpdate</summary>
     /// <returns>All the users's projects.</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
+    /// <param name="projectId"></param>
+    /// <param name="project"></param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     public async System.Threading.Tasks.Task<ResponseProject> ProjectUpdateAsync( string projectId, Project project, System.Threading.CancellationToken cancellationToken )
     {
@@ -1402,6 +1416,7 @@ namespace SpeckleCore
     /// <summary>ProjectGet</summary>
     /// <returns>The client.</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
+    /// <param name="projectId"></param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     public async System.Threading.Tasks.Task<ResponseProject> ProjectGetAsync( string projectId, System.Threading.CancellationToken cancellationToken )
     {
@@ -1501,6 +1516,7 @@ namespace SpeckleCore
     /// <summary>ProjectDelete</summary>
     /// <returns>All good!</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
+    /// <param name="projectId"></param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     public async System.Threading.Tasks.Task<ResponseBase> ProjectDeleteAsync( string projectId, System.Threading.CancellationToken cancellationToken )
     {
@@ -1592,6 +1608,7 @@ namespace SpeckleCore
     /// <summary>CommentCreate</summary>
     /// <param name="resourceType">The resource type you want to comment on.</param>
     /// <param name="resourceId">The resource id you want to comment on. In the case of streams, it must be a streamId.</param>
+    /// <param name="comment"></param>
     /// <returns>All good!</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
     public System.Threading.Tasks.Task<ResponseComment> CommentCreateAsync( ResourceType resourceType, string resourceId, Comment comment )
@@ -1602,6 +1619,7 @@ namespace SpeckleCore
     /// <summary>CommentCreate</summary>
     /// <param name="resourceType">The resource type you want to comment on.</param>
     /// <param name="resourceId">The resource id you want to comment on. In the case of streams, it must be a streamId.</param>
+    /// <param name="comment"></param>
     /// <returns>All good!</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -1817,6 +1835,7 @@ namespace SpeckleCore
     /// <summary>CommentGet</summary>
     /// <returns>All good!</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
+    /// <param name="commentId"></param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     public async System.Threading.Tasks.Task<ResponseComment> CommentGetAsync( string commentId, System.Threading.CancellationToken cancellationToken )
     {
@@ -1916,6 +1935,8 @@ namespace SpeckleCore
     /// <summary>CommentUpdate</summary>
     /// <returns>All good!</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
+    /// <param name="commentId"></param>
+    /// <param name="comment"></param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     public async System.Threading.Tasks.Task<ResponseBase> CommentUpdateAsync( string commentId, Comment comment, System.Threading.CancellationToken cancellationToken )
     {
@@ -2018,6 +2039,7 @@ namespace SpeckleCore
     /// <summary>CommentDelete</summary>
     /// <returns>All good!</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
+    /// <param name="commentId"></param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     public async System.Threading.Tasks.Task<ResponseBase> CommentDeleteAsync( string commentId, System.Threading.CancellationToken cancellationToken )
     {
@@ -2118,6 +2140,7 @@ namespace SpeckleCore
     /// <returns>All good!</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+    /// <param name="query"></param>
     public async System.Threading.Tasks.Task<ResponseStream> StreamsGetAllAsync( System.Threading.CancellationToken cancellationToken, string query )
     {
       var urlBuilder_ = new System.Text.StringBuilder();
@@ -2302,16 +2325,18 @@ namespace SpeckleCore
     /// <summary>StreamCreate</summary>
     /// <returns>All good!</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
-    public System.Threading.Tasks.Task<ResponseStream> StreamCreateAsync( SpeckleStream stream )
+    public System.Threading.Tasks.Task<ResponseStream> StreamCreateAsync( SpeckleStream stream, int timeoutMillisecondsOverride = 0)
     {
-      return StreamCreateAsync( stream, System.Threading.CancellationToken.None );
+      return StreamCreateAsync( stream, System.Threading.CancellationToken.None, timeoutMillisecondsOverride );
     }
 
     /// <summary>StreamCreate</summary>
     /// <returns>All good!</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
+    /// <param name="stream">Custom timeout (in milliseconds) for this API call</param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-    public async System.Threading.Tasks.Task<ResponseStream> StreamCreateAsync( SpeckleStream stream, System.Threading.CancellationToken cancellationToken )
+    /// <param name="timeoutMillisecondsOverride"></param>
+    public async System.Threading.Tasks.Task<ResponseStream> StreamCreateAsync( SpeckleStream stream, System.Threading.CancellationToken cancellationToken, int timeoutMillisecondsOverride = 0)
     {
 
       SpeckleTelemetry.RecordStreamCreated( ClientType );
@@ -2319,7 +2344,7 @@ namespace SpeckleCore
       var urlBuilder_ = new System.Text.StringBuilder();
       urlBuilder_.Append( BaseUrl != null ? BaseUrl.TrimEnd( '/' ) : "" ).Append( "/streams" );
 
-      var client_ = GetHttpClient();
+      var client_ = timeoutMillisecondsOverride == 0 ? GetHttpClient() : GetHttpClient(timeoutMillisecondsOverride);
       try
       {
         using ( var request_ = new System.Net.Http.HttpRequestMessage() )
@@ -2393,28 +2418,37 @@ namespace SpeckleCore
           }
         }
       }
+      catch (Exception ex)
+      {
+
+      }
       finally
       {
         if ( client_ != null )
           client_.Dispose();
       }
+      return null;
     }
 
     /// <summary>StreamGet</summary>
+    /// <param name="streamId"></param>
     /// <param name="query">Specifiy which fields to retrieve, ie `?fields=layers,baseProperties`.</param>
+    /// <param name="timeoutMillisecondsOverride">Custom override of timeout for this API call</param>
     /// <returns>All good!</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
-    public System.Threading.Tasks.Task<ResponseStream> StreamGetAsync( string streamId, string query )
+    public System.Threading.Tasks.Task<ResponseStream> StreamGetAsync( string streamId, string query, int timeoutMillisecondsOverride = 0)
     {
-      return StreamGetAsync( streamId, query, System.Threading.CancellationToken.None );
+      return StreamGetAsync( streamId, query, System.Threading.CancellationToken.None, timeoutMillisecondsOverride );
     }
 
     /// <summary>StreamGet</summary>
+    /// <param name="streamId"></param>
     /// <param name="query">Specifiy which fields to retrieve, ie `?fields=layers,baseProperties`.</param>
     /// <returns>All good!</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-    public async System.Threading.Tasks.Task<ResponseStream> StreamGetAsync( string streamId, string query, System.Threading.CancellationToken cancellationToken )
+    /// <param name="timeoutMillisecondsOverride"></param>
+    public async System.Threading.Tasks.Task<ResponseStream> StreamGetAsync( string streamId, string query, System.Threading.CancellationToken cancellationToken, int timeoutMillisecondsOverride = 0)
     {
 
       SpeckleTelemetry.RecordStreamReceived( ClientType );
@@ -2427,7 +2461,7 @@ namespace SpeckleCore
       urlBuilder_.Replace( "{streamId}", System.Uri.EscapeDataString( ConvertToString( streamId, System.Globalization.CultureInfo.InvariantCulture ) ) );
       if ( query != null ) urlBuilder_.Append( query );
 
-      var client_ = GetHttpClient();
+      var client_ = (timeoutMillisecondsOverride == 0) ? GetHttpClient() : GetHttpClient(timeoutMillisecondsOverride);
       try
       {
         using ( var request_ = new System.Net.Http.HttpRequestMessage() )
@@ -2512,18 +2546,20 @@ namespace SpeckleCore
     /// <summary>StreamUpdate</summary>
     /// <returns>All good!</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
-    public System.Threading.Tasks.Task<ResponseBase> StreamUpdateAsync( string streamId, SpeckleStream stream )
+    public System.Threading.Tasks.Task<ResponseBase> StreamUpdateAsync( string streamId, SpeckleStream stream, int timeoutMillisecondsOverride = 0)
     {
-      return StreamUpdateAsync( streamId, stream, System.Threading.CancellationToken.None );
+      return StreamUpdateAsync( streamId, stream, System.Threading.CancellationToken.None, timeoutMillisecondsOverride);
     }
 
     /// <summary>StreamUpdate</summary>
     /// <returns>All good!</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
+    /// <param name="streamId"></param>
+    /// <param name="stream"></param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-    public async System.Threading.Tasks.Task<ResponseBase> StreamUpdateAsync( string streamId, SpeckleStream stream, System.Threading.CancellationToken cancellationToken )
+    /// <param name="timeoutMillisecondsOverride"></param>
+    public async System.Threading.Tasks.Task<ResponseBase> StreamUpdateAsync( string streamId, SpeckleStream stream, System.Threading.CancellationToken cancellationToken, int timeoutMillisecondsOverride = 0)
     {
-
       SpeckleTelemetry.RecordStreamUpdated( ClientType );
 
       if ( streamId == null )
@@ -2533,7 +2569,7 @@ namespace SpeckleCore
       urlBuilder_.Append( BaseUrl != null ? BaseUrl.TrimEnd( '/' ) : "" ).Append( "/streams/{streamId}" );
       urlBuilder_.Replace( "{streamId}", System.Uri.EscapeDataString( ConvertToString( streamId, System.Globalization.CultureInfo.InvariantCulture ) ) );
 
-      var client_ = GetHttpClient();
+      var client_ = (timeoutMillisecondsOverride == 0) ? GetHttpClient() : GetHttpClient(timeoutMillisecondsOverride);
       try
       {
         using ( var request_ = new System.Net.Http.HttpRequestMessage() )
@@ -2625,6 +2661,7 @@ namespace SpeckleCore
     /// <summary>StreamDelete</summary>
     /// <returns>All good!</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
+    /// <param name="streamId"></param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     public async System.Threading.Tasks.Task<ResponseBase> StreamDeleteAsync( string streamId, System.Threading.CancellationToken cancellationToken )
     {
@@ -2714,6 +2751,7 @@ namespace SpeckleCore
     }
 
     /// <summary>StreamGetObjects</summary>
+    /// <param name="streamId"></param>
     /// <param name="query">Specifiy which fields to retrieve, filters, limits, etc.</param>
     /// <returns>All good!</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
@@ -2723,6 +2761,7 @@ namespace SpeckleCore
     }
 
     /// <summary>StreamGetObjects</summary>
+    /// <param name="streamId"></param>
     /// <param name="query">Specifiy which fields to retrieve, filters, limits, etc.</param>
     /// <returns>All good!</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
@@ -2831,6 +2870,7 @@ namespace SpeckleCore
     /// <summary>StreamClone</summary>
     /// <returns>All good!</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
+    /// <param name="streamId"></param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     public async System.Threading.Tasks.Task<ResponseStreamClone> StreamCloneAsync( string streamId, System.Threading.CancellationToken cancellationToken )
     {
@@ -2930,6 +2970,8 @@ namespace SpeckleCore
     /// <summary>StreamDiff</summary>
     /// <returns>All good!</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
+    /// <param name="streamId"></param>
+    /// <param name="otherStreamId"></param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     public async System.Threading.Tasks.Task<ResponseStreamDiff> StreamDiffAsync( string streamId, string otherStreamId, System.Threading.CancellationToken cancellationToken )
     {
@@ -3027,11 +3069,13 @@ namespace SpeckleCore
             return StreamDeltaDiffAsync(streamId, otherStreamId, System.Threading.CancellationToken.None);
         }
 
-        /// <summary>StreamDiff</summary>
-        /// <returns>All good!</returns>
-        /// <exception cref="SpeckleException">A server side error occurred.</exception>
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async System.Threading.Tasks.Task<ResponseStreamDeltaDiff> StreamDeltaDiffAsync(string streamId, string otherStreamId, System.Threading.CancellationToken cancellationToken)
+    /// <summary>StreamDiff</summary>
+    /// <returns>All good!</returns>
+    /// <exception cref="SpeckleException">A server side error occurred.</exception>
+    /// <param name="streamId"></param>
+    /// <param name="otherStreamId"></param>
+    /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+    public async System.Threading.Tasks.Task<ResponseStreamDeltaDiff> StreamDeltaDiffAsync(string streamId, string otherStreamId, System.Threading.CancellationToken cancellationToken)
         {
             if (streamId == null)
                 throw new System.ArgumentNullException("streamId");
@@ -3234,6 +3278,7 @@ namespace SpeckleCore
     /// <summary>ObjectCreate</summary>
     /// <returns>All the users's projects.</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
+    /// <param name="objects"></param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     public async System.Threading.Tasks.Task<ResponseObject> ObjectDeriveAsync(System.Collections.Generic.IEnumerable<SpeckleObject> objects, System.Threading.CancellationToken cancellationToken)
     {
@@ -3332,6 +3377,8 @@ namespace SpeckleCore
     /// <summary>ObjectUpdate</summary>
     /// <returns>All the users's projects.</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
+    /// <param name="objectId"></param>
+    /// <param name="object"></param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     public async System.Threading.Tasks.Task<ResponseObject> ObjectUpdateAsync( string objectId, SpeckleObject @object, System.Threading.CancellationToken cancellationToken )
     {
@@ -3434,6 +3481,7 @@ namespace SpeckleCore
     /// <summary>ObjectGet</summary>
     /// <returns>The client.</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
+    /// <param name="objectId"></param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     public async System.Threading.Tasks.Task<ResponseObject> ObjectGetAsync( string objectId, System.Threading.CancellationToken cancellationToken )
     {
@@ -3533,6 +3581,7 @@ namespace SpeckleCore
     /// <summary>ObjectDelete</summary>
     /// <returns>All good!</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
+    /// <param name="objectId"></param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     public async System.Threading.Tasks.Task<ResponseBase> ObjectDeleteAsync( string objectId, System.Threading.CancellationToken cancellationToken )
     {
@@ -3622,6 +3671,8 @@ namespace SpeckleCore
     }
 
     /// <summary>ObjectUpdateProperties</summary>
+    /// <param name="objectId"></param>
+    /// <param name="object"></param>
     /// <param name="@object">An object that holds the keys you want to modify or add.</param>
     /// <returns>All good!</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
@@ -3631,6 +3682,8 @@ namespace SpeckleCore
     }
 
     /// <summary>ObjectUpdateProperties</summary>
+    /// <param name="objectId"></param>
+    /// <param name="object"></param>
     /// <param name="@object">An object that holds the keys you want to modify or add.</param>
     /// <returns>All good!</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
@@ -3816,6 +3869,8 @@ namespace SpeckleCore
     /// <summary>StreamUpdate</summary>
     /// <returns>All good!</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
+    /// <param name="streamId"></param>
+    /// <param name="delta"></param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     public System.Threading.Tasks.Task<ResponseBase> StreamApplyDeltaAsync(string streamId, SpeckleDelta delta)
     {
@@ -3823,6 +3878,8 @@ namespace SpeckleCore
     }
     /// <summary>StreamUpdate</summary>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
+    /// <param name="streamId"></param>
+    /// <param name="delta"></param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     public async System.Threading.Tasks.Task<ResponseBase> StreamApplyDeltaAsync(string streamId, SpeckleDelta delta, System.Threading.CancellationToken cancellationToken)
         {
