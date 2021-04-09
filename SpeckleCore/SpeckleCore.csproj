@@ -33,6 +33,7 @@
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2">
     </PackageReference>
+    <PackageReference Include="Piwik.Tracker" Version="3.0.0" />
     <PackageReference Include="sqlite-net-pcl" Version="1.5.231" />
     <PackageReference Include="WebSocketSharp-NonPreRelease" Version="1.0.0" />
   </ItemGroup>
