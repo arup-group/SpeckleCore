@@ -2605,6 +2605,7 @@ namespace SpeckleCore
               try
               {
                 result_ = JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                this.StreamSend();
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -3820,6 +3821,7 @@ namespace SpeckleCore
               try
               {
                 result_ = JsonConvert.DeserializeObject<ResponseObject>( responseData_, _settings.Value );
+                this.StreamReceive();
                 return result_;
               }
               catch ( System.Exception exception_ )
