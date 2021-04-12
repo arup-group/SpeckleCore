@@ -54,7 +54,6 @@ namespace SpeckleCore
                 return;
             if (piwikTracker == null)
                 Initialize(speckleApiClient);
-            SetOsRelatedData();
             piwikTracker.AddCustomParametersFromSpeckle(speckleApiClient);
             piwikTracker.DoTrackEvent(category, action, name, value);
         }
@@ -63,13 +62,15 @@ namespace SpeckleCore
         {
             piwikTracker.SetUserAgent(UserAgent);
             
-            piwikTracker.SetCustomTrackingParameter("dimensionserver_name", speckleApiClient.BaseUrl);
+            //piwikTracker.SetCustomTrackingParameter("dimensionserver_name", speckleApiClient.BaseUrl);
             piwikTracker.SetCustomTrackingParameter("client", speckleApiClient.ClientType);
+            piwikTracker.SetCustomTrackingParameter("dimension1", speckleApiClient.ClientType);
+            piwikTracker.SetCustomTrackingParameter("dimension2", OsVersion);
             piwikTracker.SetCustomTrackingParameter("os_version", OsVersion);
             piwikTracker.SetCustomTrackingParameter("speckle_version", SpeckleCoreVersion);
             piwikTracker.SetCustomTrackingParameter("user", speckleApiClient.User._id);
             piwikTracker.SetCustomTrackingParameter("user_is_creator", speckleApiClient.User._id == speckleApiClient.Stream.Owner ? "True" : "False");
-            piwikTracker.DoTrackPageView("Record Metadata");
+            //piwikTracker.DoTrackPageView("Record Metadata");
         }
 
         private static string GetSpeckleVersion()
