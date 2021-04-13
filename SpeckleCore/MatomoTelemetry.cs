@@ -34,12 +34,13 @@ namespace SpeckleCore
         public static void StreamSend(this SpeckleApiClient speckleApiClient)
         {
             SendEvent(speckleApiClient, "stream", "send", "object_num", speckleApiClient.GetNumberOfObjects().ToString());
+            AppInsightsTelemetry.Track();
         }
 
         public static void StreamReceive(this SpeckleApiClient speckleApiClient)
         {
             SendEvent(speckleApiClient, "stream", "receive", "object_num", speckleApiClient.GetNumberOfObjects().ToString());
-
+            AppInsightsTelemetry.Track();
         }
 
         public static int GetNumberOfObjects(this SpeckleApiClient speckleApiClient)
