@@ -62,14 +62,17 @@ namespace SpeckleCore
         {
             piwikTracker.SetUserAgent(UserAgent);
             
-            //piwikTracker.SetCustomTrackingParameter("dimensionserver_name", speckleApiClient.BaseUrl);
             piwikTracker.SetCustomTrackingParameter("client", speckleApiClient.ClientType);
+            // Here are some variations that are suggested from the docs in order to track custom dimensions.
+            // Will need to came back and clean-up here once we know how this works
             piwikTracker.SetCustomTrackingParameter("dimension1", speckleApiClient.ClientType);
             piwikTracker.SetCustomTrackingParameter("dimension2", OsVersion);
             piwikTracker.SetCustomTrackingParameter("os_version", OsVersion);
             piwikTracker.SetCustomTrackingParameter("speckle_version", SpeckleCoreVersion);
             piwikTracker.SetCustomTrackingParameter("user", speckleApiClient.User._id);
             piwikTracker.SetCustomTrackingParameter("user_is_creator", speckleApiClient.User._id == speckleApiClient.Stream.Owner ? "True" : "False");
+            // Not sure if we need the line below for tracking custom Dimensions. 
+            // or the one we are calling after this method is enough: piwikTracker.DoTrackEvent(category, action, name, value);
             //piwikTracker.DoTrackPageView("Record Metadata");
         }
 
