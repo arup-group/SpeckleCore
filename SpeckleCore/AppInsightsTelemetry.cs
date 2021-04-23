@@ -15,21 +15,57 @@ namespace SpeckleCore
         public static string UserAgent { get; private set; }
         public static string SpeckleCoreVersion { get; private set; }
 
-        public static void Track(SpeckleApiClient speckleApiClient)
+        private static TelemetryClient telemetryClient;
+        public static TelemetryClient TelemetryClient
         {
-            // you may use different options to create configuration as shown later in this article
-            TelemetryConfiguration configuration = TelemetryConfiguration.CreateDefault();
-            var telemetryClient = new TelemetryClient(configuration);
-            telemetryClient.TrackTrace("Hello World!");
+            get
+            {
+                if (telemetryClient == null)
+                    telemetryClient = GetTelemetryClient();
+                return telemetryClient;
+            }
+        }
 
+        public static void TrackWithMetaAppInsights(this SpeckleApiClient speckleApiClient, string trackName)
+        {
+            var metrics = new Dictionary<string, double>()
+            {
+                {"object_num", speckleApiClient.GetNumberOfObjects() },
+            };
+
+            var properties = speckleApiClient.GetTrackClientProperties();
+
+            TrackCustomAppInsights(trackName, metrics, properties);
+        }
+
+        private static TelemetryClient GetTelemetryClient()
+        {
+            TelemetryConfiguration configuration = TelemetryConfiguration.CreateDefault();
+            // you may use different options to create configuration as shown later in this article
+            var telemetryClient = new TelemetryClient(configuration);
+            //telemetryClient.TrackTrace("Hello World!");
+            return telemetryClient;
+        }
+
+        public static void TrackCustomAppInsights(string trackName, Dictionary<string, double> metrics, Dictionary<string, string> properties)
+        {
+            if (!LocalContext.GetTelemetrySettings())
+                return;
+
+            var telemetryClient = TelemetryClient;
             PageViewTelemetry telemetry = new PageViewTelemetry();
-            telemetry.Properties.Add("client", speckleApiClient.ClientType);
-            telemetry.Properties.Add("os_version", TelemetryUtilities.OsVersion);
-            telemetry.Properties.Add("speckle_version", TelemetryUtilities.SpeckleCoreVersion);
-            telemetry.Properties.Add("user", speckleApiClient.User._id);
-            telemetry.Properties.Add("user_is_owner", speckleApiClient.IsStreamOwner());
-            
-            telemetry.Name = "Stream-Send";
+            telemetry.Name = trackName;
+
+            foreach (var prop in properties)
+            {
+                telemetry.Properties.Add(prop);
+            }
+
+            foreach (var metric in metrics)
+            {
+                telemetry.Metrics.Add(metric);
+            }
+
             telemetryClient.TrackPageView(telemetry);
         }
 

@@ -82,6 +82,46 @@ namespace SpeckleCore
         {
             return speckleApiClient.User._id == speckleApiClient.Stream.Owner ? "True" : "False";
         }
-    
+
+        public static void Track(this SpeckleApiClient speckleApiClient, string trackName)
+        {
+            if (!LocalContext.GetTelemetrySettings())
+                return;
+            speckleApiClient.TrackWithMetaMatomo(trackName, "");
+            speckleApiClient.TrackWithMetaAppInsights(trackName);
+        }
+
+        public static void TrackCustom(string trackName, Dictionary<string, double> metrics, Dictionary<string, string> properties)
+        {
+            if (!LocalContext.GetTelemetrySettings())
+                return;
+            AppInsightsTelemetry.TrackCustomAppInsights(trackName, metrics, properties);
+            MatomoTelemetry.TrackCustomMatomo(trackName, "", "", "", properties);
+        }
+
+        public static void StreamSend(this SpeckleApiClient speckleApiClient)
+        {
+            MatomoTelemetry.TrackWithMetaMatomo(speckleApiClient, "stream", "send", "object_num", speckleApiClient.GetNumberOfObjects().ToString());
+            speckleApiClient.TrackWithMetaAppInsights("stream-send");
+        }
+
+        public static void StreamReceive(this SpeckleApiClient speckleApiClient)
+        {
+            MatomoTelemetry.TrackWithMetaMatomo(speckleApiClient, "stream", "receive", "object_num", speckleApiClient.GetNumberOfObjects().ToString());
+            speckleApiClient.TrackWithMetaAppInsights("stream-receive");
+        }
+
+        public static Dictionary<string, string> GetTrackClientProperties(this SpeckleApiClient speckleApiClient)
+        {
+            return new Dictionary<string, string>()
+            {
+                {"client", speckleApiClient.ClientType},
+                { "os_version", TelemetryUtilities.OsVersion},
+                { "speckle_version", TelemetryUtilities.SpeckleCoreVersion},
+                { "user", speckleApiClient.User._id},
+                { "user_is_owner", speckleApiClient.IsStreamOwner()},
+            };
+        }
+
     }
 }

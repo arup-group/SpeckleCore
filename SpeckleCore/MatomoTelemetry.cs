@@ -1,4 +1,5 @@
 ﻿using Piwik.Tracker;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SpeckleCore
@@ -11,20 +12,9 @@ namespace SpeckleCore
 
         private static PiwikTracker piwikTracker;
 
-        private static void Initialize(SpeckleApiClient speckleApiClient)
+        private static void Initialize()
         {
             piwikTracker = new PiwikTracker(SiteId, PiwikBaseUrl);
-            piwikTracker.SetUserId(TelemetryUtilities.ComputeSHA256Hash(speckleApiClient.User._id)); //Environment.UserName + "@" + internalDomain + ".com"
-        }
-
-        public static void StreamSend(this SpeckleApiClient speckleApiClient)
-        {
-            SendEvent(speckleApiClient, "stream", "send", "object_num", speckleApiClient.GetNumberOfObjects().ToString());
-        }
-
-        public static void StreamReceive(this SpeckleApiClient speckleApiClient)
-        {
-            SendEvent(speckleApiClient, "stream", "receive", "object_num", speckleApiClient.GetNumberOfObjects().ToString());
         }
 
         public static int GetNumberOfObjects(this SpeckleApiClient speckleApiClient)
@@ -33,17 +23,36 @@ namespace SpeckleCore
         }
 
 
-        public static void SendEvent(this SpeckleApiClient speckleApiClient, string category, string action, string name = "", string value = "")
+        public static void TrackWithMetaMatomo(this SpeckleApiClient speckleApiClient, string category, string action, string name = "", string value = "")
+        {
+            if (piwikTracker == null)
+                Initialize();
+
+            piwikTracker.SetUserId(TelemetryUtilities.ComputeSHA256Hash(speckleApiClient.User._id)); //Environment.UserName + "@" + internalDomain + ".com"
+            var properties = speckleApiClient.GetTrackClientProperties();
+            TrackCustomMatomo(category, action, name, value, properties);
+        }
+
+        public static void TrackCustomMatomo(string category, string action, string name = "", string value = "", Dictionary<string, string> properties = null)
         {
             if (!LocalContext.GetTelemetrySettings())
                 return;
             if (piwikTracker == null)
-                Initialize(speckleApiClient);
-            piwikTracker.AddCustomParametersFromSpeckle(speckleApiClient);
+                Initialize();
+            
+            piwikTracker.SetUserAgent(TelemetryUtilities.UserAgent);
+            
+            if (properties != null)
+            {
+                foreach (var prop in properties)
+                {
+                    piwikTracker.SetCustomTrackingParameter(prop.Key, prop.Value);
+                }
+            }
             piwikTracker.DoTrackEvent(category, action, name, value);
-            AppInsightsTelemetry.Track(speckleApiClient);
         }
 
+        // It is only kept for the notes
         public static void AddCustomParametersFromSpeckle(this PiwikTracker piwikTracker, SpeckleApiClient speckleApiClient)
         {
             piwikTracker.SetUserAgent(TelemetryUtilities.UserAgent);
