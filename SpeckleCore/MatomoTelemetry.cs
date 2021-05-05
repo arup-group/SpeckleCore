@@ -19,7 +19,10 @@ namespace SpeckleCore
 
         public static int GetNumberOfObjects(this SpeckleApiClient speckleApiClient)
         {
-            return (int)speckleApiClient.Stream.Layers.Select(x => x.ObjectCount).Sum();
+            if (speckleApiClient.Stream.Layers != null)
+                return (int)speckleApiClient.Stream.Layers.Select(x => x.ObjectCount).Sum();
+            else
+                return (int)speckleApiClient.Stream.Objects.Count;
         }
 
 
