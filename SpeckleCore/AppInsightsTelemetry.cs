@@ -54,7 +54,7 @@ namespace SpeckleCore
                 return;
 
             var telemetryClient = TelemetryClient;
-            PageViewTelemetry telemetry = new PageViewTelemetry();
+            EventTelemetry telemetry = new EventTelemetry();
             telemetry.Name = trackName;
 
             foreach (var prop in properties)
@@ -67,7 +67,7 @@ namespace SpeckleCore
                 telemetry.Metrics.Add(metric);
             }
 
-            telemetryClient.TrackPageView(telemetry);
+            telemetryClient.TrackEvent(telemetry);
         }
 
     }
