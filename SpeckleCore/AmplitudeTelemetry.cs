@@ -7,8 +7,29 @@ using System.Text;
 
 namespace SpeckleCore
 {
-    public class AmplitudeTelemetry
+    public static class AmplitudeTelemetry
     {
+        const string requestUri = "https://api.amplitude.com/2/httpapi";
+        const string api_key = "b0c9d54ebd92a1e6be5197ef7de42c00";
+
+        public static void TrackWithMetaAmplitude(this SpeckleApiClient speckleApiClient, string trackName)
+        {
+            if (!LocalContext.GetTelemetrySettings())
+                return;
+
+            var properties = speckleApiClient.GetTrackClientProperties();
+            properties.Add("object_num", speckleApiClient.GetNumberOfObjects().ToString());
+
+            TrackAmplitudeAsync(requestUri, api_key, speckleApiClient.User._id, properties, trackName);
+        }
+
+        public static void TrackCustomAmplitude(string trackName, string user_id, Dictionary<string, string> user_properties)
+        {
+            if (!LocalContext.GetTelemetrySettings())
+                return;
+
+            TrackAmplitudeAsync(requestUri, api_key, user_id, user_properties, event_type: trackName);
+        }
 
         public static async void TrackAmplitudeAsync(string requestUri, string api_key, string user_id, Dictionary<string, string> user_properties, string event_type = "", string ip = "")
         {

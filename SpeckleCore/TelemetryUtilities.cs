@@ -89,6 +89,7 @@ namespace SpeckleCore
                 return;
             speckleApiClient.TrackWithMetaMatomo(trackName, "");
             speckleApiClient.TrackWithMetaAppInsights(trackName);
+            speckleApiClient.TrackWithMetaAmplitude(trackName);
         }
 
         public static void TrackCustom(string trackName, Dictionary<string, double> metrics, Dictionary<string, string> properties)
@@ -97,18 +98,22 @@ namespace SpeckleCore
                 return;
             AppInsightsTelemetry.TrackCustomAppInsights(trackName, metrics, properties);
             MatomoTelemetry.TrackCustomMatomo(trackName, "", "", "", properties);
+            
+            AmplitudeTelemetry.TrackCustomAmplitude(trackName, TelemetryUtilities.UserAgent, properties);
         }
 
         public static void StreamSend(this SpeckleApiClient speckleApiClient)
         {
             MatomoTelemetry.TrackWithMetaMatomo(speckleApiClient, "stream", "send", "object_num", speckleApiClient.GetNumberOfObjects().ToString());
             speckleApiClient.TrackWithMetaAppInsights("stream-send");
+            speckleApiClient.TrackWithMetaAmplitude("stream-send");
         }
 
         public static void StreamReceive(this SpeckleApiClient speckleApiClient)
         {
             MatomoTelemetry.TrackWithMetaMatomo(speckleApiClient, "stream", "receive", "object_num", speckleApiClient.GetNumberOfObjects().ToString());
             speckleApiClient.TrackWithMetaAppInsights("stream-receive");
+            speckleApiClient.TrackWithMetaAmplitude("stream-receive");
         }
 
         public static Dictionary<string, string> GetTrackClientProperties(this SpeckleApiClient speckleApiClient)
