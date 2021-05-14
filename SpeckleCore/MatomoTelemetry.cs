@@ -17,14 +17,6 @@ namespace SpeckleCore
             piwikTracker = new PiwikTracker(SiteId, PiwikBaseUrl);
         }
 
-        public static int GetNumberOfObjects(this SpeckleApiClient speckleApiClient)
-        {
-            if (speckleApiClient.Stream.Layers != null)
-                return (int)speckleApiClient.Stream.Layers.Select(x => x.ObjectCount).Sum();
-            else
-                return (int)speckleApiClient.Stream.Objects.Count;
-        }
-
 
         public static void TrackWithMetaMatomo(this SpeckleApiClient speckleApiClient, string category, string action, string name = "", string value = "")
         {
@@ -42,9 +34,9 @@ namespace SpeckleCore
                 return;
             if (piwikTracker == null)
                 Initialize();
-            
+
             piwikTracker.SetUserAgent(TelemetryUtilities.UserAgent);
-            
+
             if (properties != null)
             {
                 foreach (var prop in properties)

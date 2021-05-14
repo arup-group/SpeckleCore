@@ -123,5 +123,14 @@ namespace SpeckleCore
             };
         }
 
+        public static int GetNumberOfObjects(this SpeckleApiClient speckleApiClient)
+        {
+            SpeckleStream stream = speckleApiClient.Stream;
+            if (stream.Layers != null)
+                return (int)stream.Layers.Select(x => x.ObjectCount).Sum();
+            else
+                return stream.Objects != null ? stream.Objects.Count : 0;
+        }
+
     }
 }
