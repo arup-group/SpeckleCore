@@ -191,6 +191,22 @@ namespace SpeckleCore
 
     }
 
+    /// <summary>
+    /// Initialises the client's user information.
+    /// </summary>
+    /// <returns></returns>
+    public async Task IntializeUser()
+    {
+        try
+        {
+            User = (await this.UserGetAsync()).Resource;
+        }
+        catch (SpeckleException e)
+        {
+            OnError?.Invoke(this, new SpeckleEventArgs() { EventName = e.StatusCode.ToString(), EventData = e.Message });
+        }
+    }
+
     private async Task SetupClient( string documentName = null, string documentType = null, string documentGuid = null )
     {
       if ( ClientId == null )
