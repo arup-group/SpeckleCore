@@ -102,16 +102,28 @@ namespace SpeckleCore
             AmplitudeTelemetry.TrackCustomAmplitude(trackName, TelemetryUtilities.UserAgent, properties);
         }
 
-        public static void StreamSend(this SpeckleApiClient speckleApiClient)
+        /// <summary>
+        /// Specify the streamObjects, otherwise we will count them automatically
+        /// </summary>
+        /// <param name="speckleApiClient"></param>
+        /// <param name="streamObjects"></param>
+        public static void StreamSend(this SpeckleApiClient speckleApiClient, int? streamObjects = null)
         {
-            MatomoTelemetry.TrackWithMetaMatomo(speckleApiClient, "stream", "send", "object_num", speckleApiClient.GetNumberOfObjects().ToString());
+            int num_streamObjects = streamObjects ?? speckleApiClient.GetNumberOfObjects();
+            MatomoTelemetry.TrackWithMetaMatomo(speckleApiClient, "stream", "send", "object_num", num_streamObjects.ToString());
             speckleApiClient.TrackWithMetaAppInsights("stream-send");
             speckleApiClient.TrackWithMetaAmplitude("stream-send");
         }
 
-        public static void StreamReceive(this SpeckleApiClient speckleApiClient)
+        /// <summary>
+        /// Specify the streamObjects, otherwise we will count them automatically
+        /// </summary>
+        /// <param name="speckleApiClient"></param>
+        /// <param name="streamObjects"></param>
+        public static void StreamReceive(this SpeckleApiClient speckleApiClient, int? streamObjects = null)
         {
-            MatomoTelemetry.TrackWithMetaMatomo(speckleApiClient, "stream", "receive", "object_num", speckleApiClient.GetNumberOfObjects().ToString());
+            int num_streamObjects = streamObjects ?? speckleApiClient.GetNumberOfObjects();
+            MatomoTelemetry.TrackWithMetaMatomo(speckleApiClient, "stream", "receive", "object_num", num_streamObjects.ToString());
             speckleApiClient.TrackWithMetaAppInsights("stream-receive");
             speckleApiClient.TrackWithMetaAmplitude("stream-receive");
         }

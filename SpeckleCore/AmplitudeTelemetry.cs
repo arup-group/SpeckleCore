@@ -74,9 +74,11 @@ namespace SpeckleCore
             byte[] byte1 = encoding.GetBytes(body);
             request.ContentType = "application/x-www-form-urlencoded";
             request.ContentLength = byte1.Length;
-            Stream newStream = request.GetRequestStream();
-            newStream.Write(byte1, 0, byte1.Length);
-            return request;
+            using (var newStream = request.GetRequestStream())
+            {
+                newStream.Write(byte1, 0, byte1.Length);
+                return request;
+            }
         }
 
         public class AmplitudeBody
