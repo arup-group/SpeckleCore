@@ -20,7 +20,8 @@ namespace SpeckleCore
             var properties = speckleApiClient.GetTrackClientProperties();
             properties.Add("object_num", speckleApiClient.GetNumberOfObjects().ToString());
 
-            TrackAmplitudeAsync(requestUri, api_key, speckleApiClient.User._id, properties, trackName);
+            var user_email = TelemetryUtilities.ComputeSHA256Hash(speckleApiClient.User.Email);
+            TrackAmplitudeAsync(requestUri, api_key, user_email, properties, trackName);
         }
 
         public static void TrackCustomAmplitude(string trackName, string user_id, Dictionary<string, string> user_properties)
