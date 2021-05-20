@@ -2546,9 +2546,9 @@ namespace SpeckleCore
     /// <summary>StreamUpdate</summary>
     /// <returns>All good!</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
-    public System.Threading.Tasks.Task<ResponseBase> StreamUpdateAsync( string streamId, SpeckleStream stream, int timeoutMillisecondsOverride = 0)
+    public System.Threading.Tasks.Task<ResponseBase> StreamUpdateAsync( string streamId, SpeckleStream stream, int timeoutMillisecondsOverride = 0, bool track = true)
     {
-      return StreamUpdateAsync( streamId, stream, System.Threading.CancellationToken.None, timeoutMillisecondsOverride);
+      return StreamUpdateAsync( streamId, stream, System.Threading.CancellationToken.None, timeoutMillisecondsOverride, track);
     }
 
     /// <summary>StreamUpdate</summary>
@@ -2558,7 +2558,7 @@ namespace SpeckleCore
     /// <param name="stream"></param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     /// <param name="timeoutMillisecondsOverride"></param>
-    public async System.Threading.Tasks.Task<ResponseBase> StreamUpdateAsync( string streamId, SpeckleStream stream, System.Threading.CancellationToken cancellationToken, int timeoutMillisecondsOverride = 0)
+    public async System.Threading.Tasks.Task<ResponseBase> StreamUpdateAsync( string streamId, SpeckleStream stream, System.Threading.CancellationToken cancellationToken, int timeoutMillisecondsOverride = 0, bool track = true)
     {
       SpeckleTelemetry.RecordStreamUpdated( ClientType );
 
@@ -2605,7 +2605,8 @@ namespace SpeckleCore
               try
               {
                 result_ = JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
-                this.StreamSend();
+                if(track)
+                  this.StreamSend();
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -3768,9 +3769,9 @@ namespace SpeckleCore
     /// <param name="query">Specifiy which fields to retrieve, filters, limits, etc. For example, `?fields=type,properties,hash&type=Circle`</param>
     /// <returns>All good!</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
-    public System.Threading.Tasks.Task<ResponseObject> ObjectGetBulkAsync( string[ ] ObjectIds, string query )
+    public System.Threading.Tasks.Task<ResponseObject> ObjectGetBulkAsync( string[ ] ObjectIds, string query, bool track = true)
     {
-      return ObjectGetBulkAsync( ObjectIds, query, System.Threading.CancellationToken.None );
+      return ObjectGetBulkAsync( ObjectIds, query, System.Threading.CancellationToken.None, track);
     }
 
     /// <summary>ObjectGetBulk</summary>
@@ -3778,7 +3779,7 @@ namespace SpeckleCore
     /// <returns>All good!</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-    public async System.Threading.Tasks.Task<ResponseObject> ObjectGetBulkAsync( string[ ] ObjectIds, string query, System.Threading.CancellationToken cancellationToken )
+    public async System.Threading.Tasks.Task<ResponseObject> ObjectGetBulkAsync( string[ ] ObjectIds, string query, System.Threading.CancellationToken cancellationToken, bool track = true)
     {
       var urlBuilder_ = new System.Text.StringBuilder();
       urlBuilder_.Append( BaseUrl != null ? BaseUrl.TrimEnd( '/' ) : "" ).Append( "/objects/getbulk?" );
@@ -3821,7 +3822,8 @@ namespace SpeckleCore
               try
               {
                 result_ = JsonConvert.DeserializeObject<ResponseObject>( responseData_, _settings.Value );
-                this.StreamReceive();
+                if (track)
+                  this.StreamReceive();
                 return result_;
               }
               catch ( System.Exception exception_ )
