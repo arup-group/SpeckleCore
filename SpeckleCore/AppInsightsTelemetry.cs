@@ -28,14 +28,18 @@ namespace SpeckleCore
 
         public static void TrackWithMetaAppInsights(this SpeckleApiClient speckleApiClient, string trackName)
         {
-            var metrics = new Dictionary<string, double>()
+            try
             {
-                {"object_num", speckleApiClient.GetNumberOfObjects() },
-            };
+                var metrics = new Dictionary<string, double>()
+                {
+                    {"object_num", speckleApiClient.GetNumberOfObjects() },
+                };
 
-            var properties = speckleApiClient.GetTrackClientProperties();
+                var properties = speckleApiClient.GetTrackClientProperties();
 
-            TrackCustomAppInsights(trackName, metrics, properties);
+                TrackCustomAppInsights(trackName, metrics, properties);
+            }
+            catch { }
         }
 
         private static TelemetryClient GetTelemetryClient()
@@ -53,21 +57,25 @@ namespace SpeckleCore
             if (!LocalContext.GetTelemetrySettings())
                 return;
 
-            var telemetryClient = TelemetryClient;
-            EventTelemetry telemetry = new EventTelemetry();
-            telemetry.Name = trackName;
-
-            foreach (var prop in properties)
+            try
             {
-                telemetry.Properties.Add(prop);
-            }
+                var telemetryClient = TelemetryClient;
+                EventTelemetry telemetry = new EventTelemetry();
+                telemetry.Name = trackName;
 
-            foreach (var metric in metrics)
-            {
-                telemetry.Metrics.Add(metric);
-            }
+                foreach (var prop in properties)
+                {
+                    telemetry.Properties.Add(prop);
+                }
 
-            telemetryClient.TrackEvent(telemetry);
+                foreach (var metric in metrics)
+                {
+                    telemetry.Metrics.Add(metric);
+                }
+
+                telemetryClient.TrackEvent(telemetry);
+            }
+            catch { }
         }
 
     }

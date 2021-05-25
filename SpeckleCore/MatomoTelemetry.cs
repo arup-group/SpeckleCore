@@ -17,34 +17,39 @@ namespace SpeckleCore
             piwikTracker = new PiwikTracker(SiteId, PiwikBaseUrl);
         }
 
-
         public static void TrackWithMetaMatomo(this SpeckleApiClient speckleApiClient, string category, string action, string name = "", string value = "")
         {
             if (piwikTracker == null)
                 Initialize();
-
+            try
             piwikTracker.SetUserId(TelemetryUtilities.ComputeSHA256Hash(speckleApiClient.User.Email));
-            var properties = speckleApiClient.GetTrackClientProperties();
-            TrackCustomMatomo(category, action, name, value, properties);
+                var properties = speckleApiClient.GetTrackClientProperties();
+                TrackCustomMatomo(category, action, name, value, properties);
+            }
+            catch { }
         }
 
         public static void TrackCustomMatomo(string category, string action, string name = "", string value = "", Dictionary<string, string> properties = null)
         {
             if (!LocalContext.GetTelemetrySettings())
                 return;
-            if (piwikTracker == null)
-                Initialize();
-
-            piwikTracker.SetUserAgent(TelemetryUtilities.UserAgent);
-
-            if (properties != null)
+            try
             {
-                foreach (var prop in properties)
+                if (piwikTracker == null)
+                    Initialize();
+
+                piwikTracker.SetUserAgent(TelemetryUtilities.UserAgent);
+
+                if (properties != null)
                 {
-                    piwikTracker.SetCustomTrackingParameter(prop.Key, prop.Value);
+                    foreach (var prop in properties)
+                    {
+                        piwikTracker.SetCustomTrackingParameter(prop.Key, prop.Value);
+                    }
                 }
+                piwikTracker.DoTrackEvent(category, action, name, value);
             }
-            piwikTracker.DoTrackEvent(category, action, name, value);
+            catch { }
         }
 
         // It is only kept for the notes
