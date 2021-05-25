@@ -22,7 +22,8 @@ namespace SpeckleCore
             if (piwikTracker == null)
                 Initialize();
             try
-            piwikTracker.SetUserId(TelemetryUtilities.ComputeSHA256Hash(speckleApiClient.User.Email));
+            {
+                piwikTracker.SetUserId(TelemetryUtilities.ComputeSHA256Hash(speckleApiClient.User.Email));
                 var properties = speckleApiClient.GetTrackClientProperties();
                 TrackCustomMatomo(category, action, name, value, properties);
             }
