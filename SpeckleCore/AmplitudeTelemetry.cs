@@ -17,11 +17,14 @@ namespace SpeckleCore
             if (!LocalContext.GetTelemetrySettings())
                 return;
 
-            var properties = speckleApiClient.GetTrackClientProperties();
-            properties.Add("object_num", speckleApiClient.GetNumberOfObjects().ToString());
-
+            try
+            {
+                var properties = speckleApiClient.GetTrackClientProperties();
+                properties.Add("object_num", speckleApiClient.GetNumberOfObjects().ToString());
             var user_email = TelemetryUtilities.ComputeSHA256Hash(speckleApiClient.User.Email);
             TrackAmplitudeAsync(requestUri, api_key, user_email, properties, trackName);
+            }
+            catch { }
         }
 
         public static void TrackCustomAmplitude(string trackName, string user_id, Dictionary<string, string> user_properties)
@@ -34,20 +37,27 @@ namespace SpeckleCore
 
         public static async void TrackAmplitudeAsync(string requestUri, string api_key, string user_id, Dictionary<string, string> user_properties, string event_type = "", string ip = "")
         {
-            HttpWebRequest request = PrepRequest(requestUri, api_key, user_id, user_properties, event_type, ip);
-
-            var response = await request.GetResponseAsync().ConfigureAwait(false);
-            var resp = (HttpWebResponse)response;
+            try
+            {
+                HttpWebRequest request = PrepRequest(requestUri, api_key, user_id, user_properties, event_type, ip);
+                var response = await request.GetResponseAsync().ConfigureAwait(false);
+                var resp = (HttpWebResponse)response;
+            }
+            catch { }
         }
 
         public static void TrackAmplitude(string requestUri, string api_key, string user_id, Dictionary<string, string> user_properties, string event_type = "", string ip = "")
         {
-            HttpWebRequest request = PrepRequest(requestUri, api_key, user_id, user_properties, event_type, ip);
-
-            using (HttpWebResponse resp = (HttpWebResponse)request.GetResponse())
+            try
             {
-                Console.WriteLine("Response: " + resp.StatusCode.ToString());
+                HttpWebRequest request = PrepRequest(requestUri, api_key, user_id, user_properties, event_type, ip);
+
+                using (HttpWebResponse resp = (HttpWebResponse)request.GetResponse())
+                {
+                    Console.WriteLine("Response: " + resp.StatusCode.ToString());
+                }
             }
+            catch { }
         }
 
         private static HttpWebRequest PrepRequest(string requestUri, string api_key, string user_id, Dictionary<string, string> user_properties, string event_type, string ip)

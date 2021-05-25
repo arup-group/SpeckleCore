@@ -87,6 +87,7 @@ namespace SpeckleCore
         {
             if (!LocalContext.GetTelemetrySettings())
                 return;
+
             speckleApiClient.TrackWithMetaMatomo(trackName, "");
             speckleApiClient.TrackWithMetaAppInsights(trackName);
             speckleApiClient.TrackWithMetaAmplitude(trackName);
@@ -98,7 +99,6 @@ namespace SpeckleCore
                 return;
             AppInsightsTelemetry.TrackCustomAppInsights(trackName, metrics, properties);
             MatomoTelemetry.TrackCustomMatomo(trackName, "", "", "", properties);
-            
             AmplitudeTelemetry.TrackCustomAmplitude(trackName, TelemetryUtilities.UserAgent, properties);
         }
 
