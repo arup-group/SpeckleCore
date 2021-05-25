@@ -46,7 +46,7 @@ namespace SpeckleCore
         {
             TelemetryConfiguration configuration = TelemetryConfiguration.CreateDefault();
             // you may use different options to create configuration as shown later in this article
-            configuration.InstrumentationKey = "932d9212-7677-4d4c-8494-10176c2cdf25";
+            configuration.InstrumentationKey = "8574662d-fedc-4f9e-ac99-78afa70135a7";
             var telemetryClient = new TelemetryClient(configuration);
             //telemetryClient.TrackTrace("Hello World!");
             return telemetryClient;
